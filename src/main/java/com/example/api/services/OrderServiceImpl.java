@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -23,11 +26,16 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     UserRepo userRepo;
+
+    @Autowired
+    EmailSenderService emailSenderService;
     @Override
-    public ResponseEntity<?> create(Order o) {
+    public ResponseEntity<?> create(Order o) throws MessagingException, IOException {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         o.setDate(java.sql.Date.valueOf( format.format( new java.util.Date())));
-        return ResponseEntity.ok().body(orderRepo.save(o));
+        Order saved = orderRepo.save(o);
+        emailSenderService.sendEmail(saved);
+        return ResponseEntity.ok().body(saved);
     }
 
     @Override

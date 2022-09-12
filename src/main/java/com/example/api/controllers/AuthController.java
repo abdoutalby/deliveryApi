@@ -47,8 +47,7 @@ public class AuthController {
     @Autowired
     private JwtProvider jwtProvider;
 
-    @Autowired
-    EmailSenderService emailSenderService;
+
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginForm loginRequest) {
@@ -107,7 +106,6 @@ public class AuthController {
                 roles  );
 
         userRepository.save(user);
-        emailSenderService.sendEmail("abdoutalbi055@gmail.com");
         return ResponseEntity.ok(user);
     }
 }
